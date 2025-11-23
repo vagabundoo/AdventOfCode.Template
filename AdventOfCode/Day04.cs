@@ -38,17 +38,43 @@ public class Day04 : BaseDay
 
         }
         
+        //Part 1
+        // foreach (var number in bingoNumbers)
+        // {
+        //     foreach (var board in boards)
+        //     {
+        //         board.markNumber(number);
+        //         if (board.IsBingo())
+        //         {
+        //             var unmarkedNumbers = board.AllNumbers.Except(board.MarkedNumbers).ToList();
+        //             _solution1 = unmarkedNumbers.Sum() * number;
+        //             return;
+        //         }
+        //     }
+        // }
+        
+        // Part 2
 
+        var boardsWon = 0;
+        var totalBoards = boards.Count;
         foreach (var number in bingoNumbers)
         {
             foreach (var board in boards)
             {
+                if (board.HasWon) continue;
+                
                 board.markNumber(number);
                 if (board.IsBingo())
                 {
-                    var unmarkedNumbers = board.AllNumbers.Except(board.MarkedNumbers).ToList();
-                    _solution1 = unmarkedNumbers.Sum() * number;
-                    return;
+                    board.HasWon = true;
+                    if (boardsWon == totalBoards - 1)
+                    {
+                        var unmarkedNumbers = board.AllNumbers.Except(board.MarkedNumbers).ToList();
+                        _solution2 = unmarkedNumbers.Sum() * number;
+                    } else 
+                        boardsWon++;
+
+                    
                 }
             }
         }
@@ -64,6 +90,7 @@ public class Day04 : BaseDay
 
         public IEnumerable<int> AllNumbers => Rows.SelectMany(row => row);
         public IEnumerable<int> MarkedNumbers = [];
+        public bool HasWon = false;
 
         public void markNumber(int number)
         {
